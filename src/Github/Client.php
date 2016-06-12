@@ -89,7 +89,7 @@ class Client
     );
 
     /**
-     * The Buzz instance used to communicate with GitHub.
+     * A HttpClientInterface instance used to communicate with GitHub.
      *
      * @var HttpClient
      */
@@ -250,7 +250,7 @@ class Client
     }
 
     /**
-     * @return HttpClient
+     * @return HttpClientInterface
      */
     public function getHttpClient()
     {

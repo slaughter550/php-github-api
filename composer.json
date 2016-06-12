@@ -18,9 +18,9 @@
     ],
     "require": {
         "php":             ">=5.4",
-        "php-http/httplug": "1.0.0-RC1",
-        "php-http/promise": "1.0.0-RC1",
-        "zendframework/zend-diactoros": "^1.3"
+        "php-http/httplug": "^1.0",
+        "php-http/promise": "^1.0",
+        "php-http/discovery": "^0.8"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.0",

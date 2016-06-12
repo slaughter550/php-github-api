@@ -16,6 +16,7 @@ Uses [GitHub API v3](http://developer.github.com/v3/). The object API is very si
 ## Requirements
 
 * PHP >= 5.4
+* (optional) `guzzle/guzzle:~3.7` to use with a guzzle 3 http client
 * (optional) [php-httplug/guzzle5-adapter](https://github.com/php-http/guzzle5-adapter) to use with a guzzle 5 http client
 * (optional) [php-httplug/guzzle6-adapter](https://github.com/php-http/guzzle6-adapter) to use with a guzzle 6 http client
 
@@ -48,9 +49,7 @@ require_once 'vendor/autoload.php';
 
 $client = new \Github\Client(
     new \Github\HttpClient\HttplugClient(
-        new \Http\Adapter\Guzzle6\Client( // Only available when you require the php-httplug/guzzle6-adapter lib
-            new \GuzzleHttp\Client()
-        ),
+        new \Http\Adapter\Guzzle6\Client(),
         new \Github\Factory\RequestFactory()
     )
 );

@@ -34,6 +34,11 @@ class HttpClient implements HttpClientInterface
 
     protected $headers = array();
 
+    /**
+     * @var ClientInterface
+     */
+    private $client;
+
     private $lastResponse;
     private $lastRequest;
 

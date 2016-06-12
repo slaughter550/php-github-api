@@ -2,17 +2,28 @@
 
 namespace Github\HttpClient;
 
-use Http\Adapter\HttpAdapter;
-use Github\Factory\RequestFactory;
+use Github\Exception\InvalidArgumentException;
 use Http\Client\HttpClient;
+use Http\Discovery\HttpClientDiscovery;
+use Http\Discovery\MessageFactoryDiscovery;
+use Http\Message\MessageFactory;
+use Http\Message\RequestFactory;
 
+/**
+ * Using the HTTP plug abstraction to send HTTP messages
+ *
+ * @author gquemener
+ * @author Tobias Nyholm <tobias.nyholm@gmail.com>
+ */
 final class HttplugClient implements HttpClientInterface
 {
-    /** @var HttpAdapter */
+    /** @var HttpClient */
     private $adapter;
 
-    /** @var RequestFactory */
+    /** @var MessageFactory */
     private $factory;
+
+    private $headers = array();
 
     private $options = array(
         'base_url'    => 'https://api.github.com/',
@@ -26,14 +37,16 @@ final class HttplugClient implements HttpClientInterface
     );
 
     /**
-     * @param HttpAdapter $adapter
+     *
+     * @param HttpClient|null $adapter
+     * @param RequestFactory|null $factory
      */
     public function __construct(
-        HttpClient $adapter,
-        RequestFactory $factory
+        HttpClient $adapter = null,
+        MessageFactory $factory = null
     ) {
-        $this->adapter = $adapter;
-        $this->factory = $factory;
+        $this->adapter = $adapter ?: HttpClientDiscovery::find();
+        $this->factory = $factory ?: MessageFactoryDiscovery::find();
     }
 
     /**
@@ -72,6 +85,12 @@ final class HttplugClient implements HttpClientInterface
      */
     public function patch($path, $body = null, array $headers = array())
     {
+        return $this->request(
+            sprintf('%s%s', rtrim($this->options['base_url'], '/'), $path),
+            $body,
+            'PATCH',
+            $headers
+        );
     }
 
     /**
@@ -79,6 +98,12 @@ final class HttplugClient implements HttpClientInterface
      */
     public function put($path, $body, array $headers = array())
     {
+        return $this->request(
+            sprintf('%s%s', rtrim($this->options['base_url'], '/'), $path),
+            $body,
+            'PUT',
+            $headers
+        );
     }
 
     /**
@@ -86,6 +111,12 @@ final class HttplugClient implements HttpClientInterface
      */
     public function delete($path, $body = null, array $headers = array())
     {
+        return $this->request(
+            sprintf('%s%s', rtrim($this->options['base_url'], '/'), $path),
+            $body,
+            'DELETE',
+            $headers
+        );
     }
 
     /**
@@ -93,39 +124,43 @@ final class HttplugClient implements HttpClientInterface
      */
     public function request($path, $body, $httpMethod = 'GET', array $headers = array())
     {
-        $headers = array_merge([
-            'Accept' => sprintf('application/vnd.github.%s+json', $this->options['api_version']),
-            'User-Agent' => sprintf('%s', $this->options['user_agent']),
-        ], $headers);
+        $headers = array_merge($this->headers, $headers);
+        $request = $this->factory->createRequest($httpMethod, $path, $headers, $body);
 
-        if (null !== $body) {
-            $request = $this->factory->createRequest($httpMethod, $path, $headers, $body);
-        } else {
-            $request = $this->factory->createRequest($httpMethod, $path, $headers);
-        }
-
-        // TODO (2016-01-22 14:19 by Gildas): try catch
         return $this->adapter->sendRequest($request);
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function setOption($name, $value)
     {
+        $this->options[$name] = $value;
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function setHeaders(array $headers)
     {
+        $this->headers = array_merge($this->headers, $headers);
     }
 
     /**
-     * {@inheritdoc}
+     * Clears used headers.
      */
+    public function clearHeaders()
+    {
+        $this->headers = array(
+            'Accept' => sprintf('application/vnd.github.%s+json', $this->options['api_version']),
+            'User-Agent' => sprintf('%s', $this->options['user_agent']),
+        );
+    }
+
     public function authenticate($tokenOrLogin, $password, $authMethod)
     {
+        // TODO: Implement authenticate() method.
     }
+
+
 }
