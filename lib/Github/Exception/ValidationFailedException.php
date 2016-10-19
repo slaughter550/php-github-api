@@ -7,6 +7,7 @@ namespace Github\Exception;
  *
  * @author Joseph Bielawski <stloyd@gmail.com>
  */
+// Server
 class ValidationFailedException extends ErrorException
 {
 }

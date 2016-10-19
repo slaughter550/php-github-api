@@ -7,6 +7,7 @@ namespace Github\Exception;
  *
  * @author Joseph Bielawski <stloyd@gmail.com>
  */
+// Server
 class ApiLimitExceedException extends RuntimeException
 {
     public function __construct($limit = 5000, $code = 0, $previous = null)

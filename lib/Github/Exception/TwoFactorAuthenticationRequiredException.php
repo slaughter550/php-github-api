@@ -2,6 +2,7 @@
 
 namespace Github\Exception;
 
+// Server
 class TwoFactorAuthenticationRequiredException extends RuntimeException
 {
     private $type;

@@ -7,6 +7,7 @@ namespace Github\Exception;
  *
  * @author Joseph Bielawski <stloyd@gmail.com>
  */
+// Client
 class MissingArgumentException extends ErrorException
 {
     public function __construct($required, $code = 0, $previous = null)

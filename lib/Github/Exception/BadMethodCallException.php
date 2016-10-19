@@ -7,6 +7,7 @@ namespace Github\Exception;
  *
  * @author James Brooks <jbrooksuk@me.com>
  */
+// Client
 class BadMethodCallException extends \BadMethodCallException implements ExceptionInterface
 {
 }
